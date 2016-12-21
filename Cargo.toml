@@ -1,0 +1,13 @@
+[package]
+name = "twjson"
+version = "0.1.0"
+authors = ["aoyagikouhei <aoyagi.kouhei@gmail.com>"]
+
+[dependencies]
+oauthcli = { version = "*", features = ["hyper"] }
+url = { version = "*" }
+hyper = { version = "*", optional = true }
+json = { version = "*" }
+
+[features]
+default = ["hyper"]
