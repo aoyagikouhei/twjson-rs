@@ -108,7 +108,7 @@ impl<'a> TwitterClient<'a>
                 self.access_key.clone(),
                 self.access_secret.clone())
             .finish_for_twitter();
-        let mut auth_header_str = String::from("OAuth ");
+        let mut auth_header_str = String::from("Authorization: OAuth ");
         auth_header_str.push_str(&auth_header.to_string());
         
         let mut res = String::new();
@@ -140,7 +140,7 @@ impl<'a> TwitterClient<'a>
                 self.access_secret.clone())
             .request_parameters(parameters.into_iter())
             .finish_for_twitter();
-        let mut auth_header_str = String::from("OAuth ");
+        let mut auth_header_str = String::from("Authorization: OAuth ");
         auth_header_str.push_str(&auth_header.to_string());
         
         let content: hyper::mime::Mime = "application/x-www-form-urlencoded".parse().unwrap();
@@ -195,4 +195,3 @@ fn create_query(
     }
     s
 }
-
