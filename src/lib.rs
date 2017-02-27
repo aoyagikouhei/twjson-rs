@@ -2,12 +2,16 @@ extern crate hyper;
 extern crate oauthcli;
 extern crate url;
 extern crate json;
+extern crate hyper_native_tls;
 
 use std::fmt;
 use std::io::Read;
 use url::{percent_encoding, Url};
 use oauthcli::{OAuthAuthorizationHeaderBuilder, SignatureMethod};
 use std::borrow::Cow;
+use hyper::Client;
+use hyper::net::HttpsConnector;
+use hyper_native_tls::NativeTlsClient;
 
 #[derive(Debug)]
 pub enum TwitterError {
@@ -108,7 +112,7 @@ impl<'a> TwitterClient<'a>
         auth_header_str.push_str(&auth_header.to_string());
         
         let mut res = String::new();
-        hyper::Client::new().get(url)
+        make_client().get(url)
             .header(hyper::header::Authorization(auth_header_str))
             .send()
             .unwrap()
@@ -141,7 +145,7 @@ impl<'a> TwitterClient<'a>
         
         let content: hyper::mime::Mime = "application/x-www-form-urlencoded".parse().unwrap();
         let mut res = String::new();
-        let _ = hyper::Client::new().post(url)
+        let _ = make_client().post(url)
             .header(hyper::header::Authorization(auth_header_str))
             .header(hyper::header::ContentType(content))
             .body(body.as_bytes())
@@ -150,6 +154,12 @@ impl<'a> TwitterClient<'a>
             .read_to_string(&mut res)?;
         Ok(json::parse(&res)?)
     }
+}
+
+fn make_client() -> Client {
+    let ssl = NativeTlsClient::new().unwrap();
+    let connector = HttpsConnector::new(ssl);
+    Client::with_connector(connector)
 }
 
 fn create_query(

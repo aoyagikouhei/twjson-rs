@@ -8,6 +8,7 @@ oauthcli = { version = "*", features = ["hyper"] }
 url = { version = "*" }
 hyper = { version = "*", optional = true }
 json = { version = "*" }
+hyper-native-tls = { version = "*" }
 
 [features]
 default = ["hyper"]
